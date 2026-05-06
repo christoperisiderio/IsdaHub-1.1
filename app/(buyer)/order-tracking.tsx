@@ -1,6 +1,6 @@
 // app/(buyer)/order-tracking.tsx
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Linking } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,7 +22,7 @@ const TIMELINE_STEPS: { key: OrderStatus; label: string; icon: string }[] = [
 
 export default function OrderTrackingScreen() {
   const { orderId } = useLocalSearchParams<{ orderId: string }>();
-  const { currentUser } = useAuthStore();
+  const { currentUser, users } = useAuthStore();
   const { getOrderById, updateOrderStatus } = useOrdersStore();
 
   const order = getOrderById(orderId);
@@ -33,6 +33,7 @@ export default function OrderTrackingScreen() {
   const isCancellable = order.status === 'pending';
   const isDeclined = order.status === 'declined';
   const isCancelled = order.status === 'cancelled';
+  const fishermanMobile = users.find((u) => u.id === order.fishermanId)?.mobile;
 
   const handleCancel = () => {
     Alert.alert('Cancel Order', 'Are you sure you want to cancel this order?', [
@@ -48,9 +49,24 @@ export default function OrderTrackingScreen() {
     ]);
   };
 
+  const handleSms = async () => {
+    if (!fishermanMobile) {
+      Alert.alert('Contact unavailable', 'Seller mobile number is not available.');
+      return;
+    }
+    const body = encodeURIComponent(`Order ${order.id.slice(-6).toUpperCase()}: `);
+    const smsUrl = `sms:${fishermanMobile}?body=${body}`;
+    const canOpen = await Linking.canOpenURL(smsUrl);
+    if (!canOpen) {
+      Alert.alert('SMS unavailable', 'No SMS app available on this device.');
+      return;
+    }
+    await Linking.openURL(smsUrl);
+  };
+
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
-      <LinearGradient colors={['#1A2E25', '#0A6E4F']} style={styles.header}>
+      <LinearGradient colors={[Colors.dark, Colors.primary]} style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
           <Ionicons name="arrow-back" size={22} color={Colors.white} />
         </TouchableOpacity>
@@ -67,7 +83,7 @@ export default function OrderTrackingScreen() {
           <View style={styles.successBanner}>
             <Text style={styles.successEmoji}>🎉</Text>
             <Text style={styles.successTitle}>Order Completed!</Text>
-            <Text style={styles.successSub}>Thank you for using IsdaHub. Enjoy your seafood!</Text>
+            <Text style={styles.successSub}>Thank you for using IsdaHub PH. Enjoy your seafood!</Text>
           </View>
         )}
 
@@ -93,6 +109,16 @@ export default function OrderTrackingScreen() {
           <View style={[styles.infoRow, { borderBottomWidth: 0 }]}>
             <Text style={styles.infoLabel}>Payment</Text>
             <Text style={styles.infoValue}>{order.paymentMethod === 'cash_pickup' ? 'Cash on Pickup' : 'Cash on Delivery'}</Text>
+          </View>
+          <View style={styles.inlineActions}>
+            <TouchableOpacity style={styles.inlineActionBtn} onPress={handleSms}>
+              <Ionicons name="chatbox-outline" size={16} color={Colors.primary} />
+              <Text style={styles.inlineActionText}>SMS Seller</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.inlineActionBtnPrimary} onPress={() => router.push({ pathname: '/order-chat', params: { orderId: order.id } })}>
+              <Ionicons name="chatbubbles" size={16} color={Colors.white} />
+              <Text style={styles.inlineActionTextPrimary}>Order Chat</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -201,4 +227,15 @@ const styles = StyleSheet.create({
   doneBtnText: { fontSize: 15, fontFamily: 'Inter_700Bold', color: Colors.white },
   historyBtn: { backgroundColor: Colors.surface, borderRadius: 14, paddingVertical: 14, alignItems: 'center', borderWidth: 1.5, borderColor: Colors.border },
   historyBtnText: { fontSize: 15, fontFamily: 'Inter_700Bold', color: Colors.primary },
+  inlineActions: { marginTop: 12, flexDirection: 'row', gap: 8 },
+  inlineActionBtn: {
+    flex: 1, borderWidth: 1.5, borderColor: Colors.primary, borderRadius: 12,
+    paddingVertical: 10, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 6,
+  },
+  inlineActionBtnPrimary: {
+    flex: 1, backgroundColor: Colors.primary, borderRadius: 12,
+    paddingVertical: 10, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 6,
+  },
+  inlineActionText: { color: Colors.primary, fontSize: 12, fontFamily: 'Inter_700Bold' },
+  inlineActionTextPrimary: { color: Colors.white, fontSize: 12, fontFamily: 'Inter_700Bold' },
 });

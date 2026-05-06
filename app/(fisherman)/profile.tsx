@@ -1,5 +1,5 @@
 // app/(fisherman)/profile.tsx
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -25,14 +25,14 @@ export default function FishermanProfile() {
     { icon: 'wallet-outline', label: 'Earnings', route: '/(fisherman)/earnings', color: Colors.success },
     { icon: 'notifications-outline', label: 'Notifications', route: '/notifications', color: Colors.secondary },
     { icon: 'help-circle-outline', label: 'Help & Support', route: null, color: Colors.muted },
-    { icon: 'information-circle-outline', label: 'About IsdaHub', route: null, color: Colors.muted },
+    { icon: 'information-circle-outline', label: 'About IsdaHub PH', route: null, color: Colors.muted },
   ];
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <LinearGradient colors={['#1A2E25', '#0A6E4F']} style={styles.header}>
+        <LinearGradient colors={[Colors.dark, Colors.primary]} style={styles.header}>
           <View style={styles.avatarContainer}>
             <View style={styles.avatar}>
               <Text style={styles.avatarEmoji}>🎣</Text>
@@ -101,7 +101,7 @@ export default function FishermanProfile() {
           <Text style={styles.logoutText}>Log Out</Text>
         </TouchableOpacity>
 
-        <Text style={styles.version}>IsdaHub v1.0 · Buenavista & Nasipit</Text>
+        <Text style={styles.version}>IsdaHub PH v1.0 · Agusan del Norte</Text>
         <View style={{ height: 20 }} />
       </ScrollView>
     </SafeAreaView>

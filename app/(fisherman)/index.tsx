@@ -61,7 +61,7 @@ export default function FishermanDashboard() {
         showsVerticalScrollIndicator={false}
       >
         {/* Header */}
-        <LinearGradient colors={['#1A2E25', '#0A6E4F']} style={styles.header}>
+        <LinearGradient colors={[Colors.dark, Colors.primary]} style={styles.header}>
           <View style={styles.headerTop}>
             <View>
               <Text style={styles.greeting}>Good morning! 🎣</Text>

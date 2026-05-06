@@ -61,7 +61,7 @@ export default function FishermanLayout() {
           title: 'Add Catch',
           tabBarIcon: ({ color, focused }) => (
             <View style={styles.addBtn}>
-              <Ionicons name="add" size={28} color={Colors.white} />
+              <Ionicons name="add" size={22} color={Colors.white} />
             </View>
           ),
           tabBarLabel: () => <Text style={styles.addLabel}>Add Catch</Text>,
@@ -110,10 +110,10 @@ const styles = StyleSheet.create({
   },
   badgeText: { fontSize: 9, color: Colors.white, fontFamily: 'Inter_700Bold' },
   addBtn: {
-    width: 50, height: 50, borderRadius: 25,
+    width: 42, height: 42, borderRadius: 21,
     backgroundColor: Colors.primary,
     alignItems: 'center', justifyContent: 'center',
-    marginBottom: 4,
+    marginBottom: 2,
     shadowColor: Colors.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,

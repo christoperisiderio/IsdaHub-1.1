@@ -2,11 +2,10 @@
 import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView,
-  TouchableOpacity, Alert, KeyboardAvoidingView, Platform,
+  TouchableOpacity, Alert, KeyboardAvoidingView, Platform, Image,
 } from 'react-native';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from '../../store/authStore';
 import { Input } from '../../components/ui/Input';
@@ -14,29 +13,67 @@ import { Button } from '../../components/ui/Button';
 import { Colors } from '../../constants/Colors';
 
 export default function LoginScreen() {
-  const { login, continueAsGuest } = useAuthStore();
+  const { loginWithOtp, continueAsGuest, isRegisteredMobile } = useAuthStore();
   const [mobile, setMobile] = useState('');
-  const [password, setPassword] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{ mobile?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ mobile?: string; otp?: string }>({});
 
-  const validate = () => {
+  const validateMobile = () => {
     const e: typeof errors = {};
     if (!mobile.trim()) e.mobile = 'Mobile number is required.';
-    if (!password) e.password = 'Password is required.';
+    else if (!/^09\d{9}$/.test(mobile.trim())) e.mobile = 'Enter a valid PH mobile number (09XXXXXXXXX).';
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
-  const handleLogin = async () => {
-    if (!validate()) return;
+  const validateOtp = () => {
+    const e: typeof errors = {};
+    if (!mobile.trim()) e.mobile = 'Mobile number is required.';
+    else if (!/^09\d{9}$/.test(mobile.trim())) e.mobile = 'Enter a valid PH mobile number (09XXXXXXXXX).';
+    if (!otp.trim()) e.otp = 'OTP code is required.';
+    else if (!/^\d{6}$/.test(otp.trim())) e.otp = 'Enter a valid 6-digit OTP.';
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  const handleSendOtp = async () => {
+    if (!validateMobile()) return;
     setLoading(true);
     setTimeout(() => {
-      const result = login(mobile.trim(), password);
       setLoading(false);
-      if (!result.success) {
-        Alert.alert('Login Failed', result.message);
+      setOtpSent(true);
+      Alert.alert('OTP Sent', 'For presentation, any 6-digit OTP code will work.');
+    }, 500);
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!validateOtp()) return;
+    setLoading(true);
+    setTimeout(() => {
+      const normalizedMobile = mobile.trim();
+      if (!isRegisteredMobile(normalizedMobile)) {
+        setLoading(false);
+        Alert.alert(
+          'Number not registered',
+          'This mobile number is not registered yet. Continue to sign up.',
+          [
+            {
+              text: 'Continue',
+              onPress: () => router.push({
+                pathname: '/(auth)/register',
+                params: { mobile: normalizedMobile, otpVerified: '1' },
+              }),
+            },
+          ]
+        );
+        return;
       }
+
+      const result = loginWithOtp(mobile.trim(), otp.trim());
+      setLoading(false);
+      if (!result.success) Alert.alert('Verification Failed', result.message);
     }, 600);
   };
 
@@ -49,22 +86,22 @@ export default function LoginScreen() {
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         {/* Header */}
-        <LinearGradient colors={['#1A2E25', '#0A6E4F']} style={styles.header}>
+        <LinearGradient colors={[Colors.dark, Colors.primary]} style={styles.header}>
           <View style={styles.logoRow}>
             <View style={styles.logoBox}>
-              <Text style={styles.logoEmoji}>🐟</Text>
+              <Image source={require('../../assets/icon.png')} style={styles.logoImage} resizeMode="contain" />
             </View>
             <View>
-              <Text style={styles.appName}>IsdaHub</Text>
-              <Text style={styles.tagline}>Fresh seafood, direct from sea.</Text>
+              <Text style={styles.appName}>IsdaHub PH</Text>
+              <Text style={styles.tagline}>Your Link from sea to doorstep.</Text>
             </View>
           </View>
         </LinearGradient>
 
         {/* Form Card */}
         <View style={styles.formCard}>
-          <Text style={styles.title}>Welcome back!</Text>
-          <Text style={styles.subtitle}>Log in to continue trading seafood.</Text>
+          <Text style={styles.title}>Verify your number</Text>
+          <Text style={styles.subtitle}>Enter your mobile number, then input OTP to continue.</Text>
 
           <Input
             label="Mobile Number"
@@ -75,27 +112,34 @@ export default function LoginScreen() {
             keyboardType="phone-pad"
             error={errors.mobile}
           />
-          <Input
-            label="Password"
-            placeholder="Enter your password"
-            value={password}
-            onChangeText={setPassword}
-            icon="lock-closed-outline"
-            isPassword
-            error={errors.password}
-          />
+          {otpSent && (
+            <Input
+              label="OTP Code"
+              placeholder="Enter 6-digit OTP"
+              value={otp}
+              onChangeText={setOtp}
+              icon="key-outline"
+              keyboardType="number-pad"
+              maxLength={6}
+              error={errors.otp}
+            />
+          )}
 
           {/* Demo hint */}
           <View style={styles.demoHint}>
             <Ionicons name="information-circle-outline" size={14} color={Colors.info} />
             <Text style={styles.demoText}>
-              {'  '}Demo — Fisherman: <Text style={styles.bold}>09171234567</Text>{' / '}
-              Buyer: <Text style={styles.bold}>09271234567</Text>{'\n'}
-              {'         '}Password: <Text style={styles.bold}>123456</Text>
+              {'  '}Presentation mode: no SMS API connected.{'\n'}
+              {'  '}Any <Text style={styles.bold}>6-digit OTP</Text> will verify this number.
             </Text>
           </View>
 
-          <Button title="Log In" onPress={handleLogin} loading={loading} style={styles.loginBtn} />
+          <Button
+            title={otpSent ? 'Verify OTP' : 'Send OTP'}
+            onPress={otpSent ? handleVerifyOtp : handleSendOtp}
+            loading={loading}
+            style={styles.loginBtn}
+          />
 
           <View style={styles.dividerRow}>
             <View style={styles.divider} />
@@ -137,7 +181,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
     borderWidth: 1.5, borderColor: 'rgba(255,255,255,0.25)',
   },
-  logoEmoji: { fontSize: 30 },
+  logoImage: { width: 40, height: 40, borderRadius: 10 },
   appName: { fontSize: 28, fontFamily: 'Nunito_900Black', color: Colors.white, letterSpacing: -0.5 },
   tagline: { fontSize: 12, color: 'rgba(255,255,255,0.65)', fontFamily: 'Inter_500Medium' },
   formCard: {

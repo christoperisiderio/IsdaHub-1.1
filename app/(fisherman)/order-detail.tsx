@@ -1,7 +1,7 @@
 // app/(fisherman)/order-detail.tsx
 import React from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert,
+  View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Linking,
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -52,6 +52,17 @@ export default function FishermanOrderDetail() {
       { text: 'Decline', style: 'destructive', onPress: () => updateOrderStatus(order.id, 'declined', currentUser.id) },
     ]);
 
+  const handleSms = async () => {
+    const body = encodeURIComponent(`Order ${order.id.slice(-6).toUpperCase()}: `);
+    const smsUrl = `sms:${order.buyerMobile}?body=${body}`;
+    const canOpen = await Linking.canOpenURL(smsUrl);
+    if (!canOpen) {
+      Alert.alert('SMS unavailable', 'No SMS app available on this device.');
+      return;
+    }
+    await Linking.openURL(smsUrl);
+  };
+
   const Row = ({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) => (
     <View style={styles.infoRow}>
       <Text style={styles.infoLabel}>{label}</Text>
@@ -61,7 +72,7 @@ export default function FishermanOrderDetail() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
-      <LinearGradient colors={['#1A2E25', '#0A6E4F']} style={styles.header}>
+      <LinearGradient colors={[Colors.dark, Colors.primary]} style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
           <Ionicons name="arrow-back" size={22} color={Colors.white} />
         </TouchableOpacity>
@@ -78,6 +89,15 @@ export default function FishermanOrderDetail() {
           <Text style={styles.sectionTitle}>Buyer Information</Text>
           <Row label="Name" value={order.buyerName} />
           <Row label="Mobile" value={order.buyerMobile} />
+          <View style={styles.inlineActions}>
+            <Button title="Send SMS" onPress={handleSms} variant="outline" fullWidth={false} style={styles.inlineBtn} />
+            <Button
+              title="Open Chat"
+              onPress={() => router.push({ pathname: '/order-chat', params: { orderId: order.id } })}
+              fullWidth={false}
+              style={styles.inlineBtn}
+            />
+          </View>
         </View>
 
         {/* Order Details */}
@@ -170,4 +190,6 @@ const styles = StyleSheet.create({
   timelineLabelDone: { color: Colors.dark, fontFamily: 'Inter_600SemiBold' },
   timelineLabelActive: { color: Colors.primary, fontFamily: 'Inter_700Bold' },
   actionsSection: { marginTop: 4, marginBottom: 8 },
+  inlineActions: { flexDirection: 'row', gap: 8, marginTop: 12 },
+  inlineBtn: { flex: 1 },
 });

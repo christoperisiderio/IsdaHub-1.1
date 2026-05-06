@@ -41,6 +41,8 @@ interface AuthState {
   isAuthenticated: boolean;
   isGuest: boolean;
   login: (mobile: string, password: string) => AuthResult;
+  loginWithOtp: (mobile: string, otp: string) => AuthResult;
+  isRegisteredMobile: (mobile: string) => boolean;
   register: (payload: RegisterPayload) => AuthResult;
   logout: () => void;
   continueAsGuest: () => void;
@@ -62,6 +64,30 @@ export const useAuthStore = create<AuthState>()(
         const { password: _p, ...publicUser } = u;
         set({ currentUser: publicUser, isAuthenticated: true, isGuest: false });
         return { success: true };
+      },
+
+      loginWithOtp: (mobile, otp) => {
+        const normalizedMobile = mobile.trim();
+        if (!/^09\d{9}$/.test(normalizedMobile)) {
+          return { success: false, message: 'Enter a valid PH mobile number (09XXXXXXXXX).' };
+        }
+        if (!/^\d{6}$/.test(otp.trim())) {
+          return { success: false, message: 'Enter a valid 6-digit OTP code.' };
+        }
+
+        const existing = get().users.find((x) => x.mobile === normalizedMobile);
+        if (!existing) {
+          return { success: false, message: 'Mobile number not registered yet. Please sign up first.' };
+        }
+
+        const { password: _p, ...publicUser } = existing;
+        set({ currentUser: publicUser, isAuthenticated: true, isGuest: false });
+        return { success: true };
+      },
+
+      isRegisteredMobile: (mobile) => {
+        const normalizedMobile = mobile.trim();
+        return get().users.some((x) => x.mobile === normalizedMobile);
       },
 
       register: (payload) => {

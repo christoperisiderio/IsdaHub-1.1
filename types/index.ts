@@ -99,3 +99,11 @@ export interface RegisterPayload {
   businessName?: string;
   fisheryRegNumber?: string;
 }
+
+export interface OrderMessage {
+  id: string;
+  orderId: string;
+  senderId: string;
+  text: string;
+  createdAt: string;
+}

@@ -21,13 +21,13 @@ export default function BuyerProfile() {
   if (isGuest) {
     return (
       <SafeAreaView style={styles.safe} edges={['top']}>
-        <LinearGradient colors={['#1A2E25', '#0A6E4F']} style={styles.guestHeader}>
+        <LinearGradient colors={[Colors.dark, Colors.primary]} style={styles.guestHeader}>
           <View style={styles.guestAvatar}><Text style={{ fontSize: 44 }}>👤</Text></View>
           <Text style={styles.guestTitle}>Guest User</Text>
           <Text style={styles.guestSub}>Browsing mode only</Text>
         </LinearGradient>
         <View style={styles.guestCTA}>
-          <Text style={styles.guestCTATitle}>Join IsdaHub today!</Text>
+          <Text style={styles.guestCTATitle}>Join IsdaHub PH today!</Text>
           <Text style={styles.guestCTADesc}>Log in or create an account to place orders, track deliveries, and more.</Text>
           <TouchableOpacity style={styles.loginBtn} onPress={() => router.push('/(auth)/login')}>
             <Text style={styles.loginBtnText}>Log In</Text>
@@ -47,13 +47,13 @@ export default function BuyerProfile() {
     { icon: 'time-outline', label: 'Order History', route: '/(buyer)/history', color: Colors.info },
     { icon: 'notifications-outline', label: 'Notifications', route: '/notifications', color: Colors.secondary },
     { icon: 'help-circle-outline', label: 'Help & Support', route: null, color: Colors.muted },
-    { icon: 'information-circle-outline', label: 'About IsdaHub', route: null, color: Colors.muted },
+    { icon: 'information-circle-outline', label: 'About IsdaHub PH', route: null, color: Colors.muted },
   ];
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
-        <LinearGradient colors={['#1A2E25', '#0A6E4F']} style={styles.header}>
+        <LinearGradient colors={[Colors.dark, Colors.primary]} style={styles.header}>
           <View style={styles.avatar}>
             <Text style={styles.avatarEmoji}>🛒</Text>
           </View>
@@ -108,7 +108,7 @@ export default function BuyerProfile() {
           <Text style={styles.logoutText}>Log Out</Text>
         </TouchableOpacity>
 
-        <Text style={styles.version}>IsdaHub v1.0 · Buenavista & Nasipit</Text>
+        <Text style={styles.version}>IsdaHub PH v1.0 · Agusan del Norte</Text>
         <View style={{ height: 20 }} />
       </ScrollView>
     </SafeAreaView>

@@ -55,7 +55,7 @@ export default function ListingDetailScreen() {
       <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Hero */}
         <View style={styles.hero}>
-          <LinearGradient colors={['#1A2E25', '#0A6E4F']} style={styles.heroGrad}>
+          <LinearGradient colors={[Colors.dark, Colors.primary]} style={styles.heroGrad}>
             <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
               <Ionicons name="arrow-back" size={22} color={Colors.white} />
             </TouchableOpacity>

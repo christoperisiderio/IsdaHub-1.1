@@ -1,9 +1,24 @@
 // constants/locations.ts
-export const COVERED_MUNICIPALITIES = ['Buenavista', 'Nasipit'];
+export const COVERED_MUNICIPALITIES = [
+  'Buenavista',
+  'Nasipit',
+  'Carmen',
+  'Kitcharao',
+  'Santiago',
+  'Tubay',
+  'Magallanes',
+  'Jabonga',
+];
 
 export const DELIVERY_FEES: Record<string, number> = {
   Buenavista: 50,
   Nasipit: 70,
+  Carmen: 90,
+  Kitcharao: 95,
+  Santiago: 90,
+  Tubay: 85,
+  Magallanes: 100,
+  Jabonga: 110,
 };
 
 export const MUNICIPALITIES_WITH_BARANGAYS: Record<string, string[]> = {
@@ -55,6 +70,12 @@ export const MUNICIPALITIES_WITH_BARANGAYS: Record<string, string[]> = {
     'Talisay',
     'Tungao',
   ],
+  Carmen: ['Poblacion', 'Cahayagan', 'San Agustin', 'Rojales', 'Tagcatong'],
+  Kitcharao: ['Poblacion', 'Bangayan', 'Canaway', 'Crossing', 'Songkoy'],
+  Santiago: ['Poblacion 1', 'Poblacion 2', 'Jagupit', 'Curva', 'San Isidro'],
+  Tubay: ['Poblacion', 'Doce Martires', 'La Fraternidad', 'Binuangan', 'Tinigbasan'],
+  Magallanes: ['Poblacion', 'Buhang', 'Caloc-an', 'Guiasan', 'Santo Nino'],
+  Jabonga: ['Poblacion', 'A. Beltran', 'Baleguian', 'Colorado', 'Libas'],
 };
 
 export const isInCoverageArea = (municipality: string): boolean => {

@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Animated,
   Dimensions,
+  Image,
 } from 'react-native';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -76,7 +77,7 @@ export default function SplashScreen() {
   }, []);
 
   return (
-    <LinearGradient colors={[Colors.dark, Colors.primary, '#0D8B64']} style={styles.container}>
+    <LinearGradient colors={[Colors.dark, Colors.primary, Colors.primaryLight]} style={styles.container}>
       {/* Ocean wave decoration */}
       <View style={styles.wavesContainer}>
         <View style={[styles.wave, styles.wave1]} />
@@ -87,11 +88,11 @@ export default function SplashScreen() {
       {/* Logo */}
       <Animated.View style={[styles.logoContainer, { transform: [{ scale: scaleAnim }], opacity: opacityAnim }]}>
         <View style={styles.logoCircle}>
-          <Text style={styles.logoEmoji}>🐟</Text>
+          <Image source={require('../assets/icon.png')} style={styles.logoImage} resizeMode="contain" />
         </View>
-        <Text style={styles.appName}>IsdaHub</Text>
+        <Text style={styles.appName}>IsdaHub PH</Text>
         <Animated.View style={{ transform: [{ translateY: slideAnim }], opacity: opacityAnim }}>
-          <Text style={styles.tagline}>Fresh Seafood. Direct from Sea.</Text>
+          <Text style={styles.tagline}>Your Link from sea to doorstep.</Text>
         </Animated.View>
       </Animated.View>
 
@@ -102,7 +103,7 @@ export default function SplashScreen() {
         ))}
       </View>
 
-      <Text style={styles.footer}>Buenavista · Nasipit · Agusan del Norte</Text>
+      <Text style={styles.footer}>Agusan del Norte coastal network</Text>
     </LinearGradient>
   );
 }
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'rgba(255,255,255,0.25)',
   },
-  logoEmoji: { fontSize: 56 },
+  logoImage: { width: 74, height: 74, borderRadius: 18 },
   appName: {
     fontSize: 48,
     fontFamily: 'Nunito_900Black',

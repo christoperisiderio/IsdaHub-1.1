@@ -20,7 +20,7 @@ export default function BuyerOrdersScreen() {
   if (isGuest) {
     return (
       <SafeAreaView style={styles.safe} edges={['top']}>
-        <LinearGradient colors={['#1A2E25', '#0A6E4F']} style={styles.header}>
+        <LinearGradient colors={[Colors.dark, Colors.primary]} style={styles.header}>
           <Text style={styles.headerTitle}>My Orders</Text>
         </LinearGradient>
         <View style={styles.guestState}>
@@ -41,7 +41,7 @@ export default function BuyerOrdersScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
-      <LinearGradient colors={['#1A2E25', '#0A6E4F']} style={styles.header}>
+      <LinearGradient colors={[Colors.dark, Colors.primary]} style={styles.header}>
         <Text style={styles.headerTitle}>My Orders</Text>
         <Text style={styles.headerSub}>{activeOrders.length} active order{activeOrders.length !== 1 ? 's' : ''}</Text>
       </LinearGradient>

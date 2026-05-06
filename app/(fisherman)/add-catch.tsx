@@ -118,7 +118,7 @@ export default function AddCatchScreen() {
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView style={styles.scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
           {/* Header */}
-          <LinearGradient colors={['#1A2E25', '#0A6E4F']} style={styles.header}>
+          <LinearGradient colors={[Colors.dark, Colors.primary]} style={styles.header}>
             <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
               <Ionicons name="arrow-back" size={22} color={Colors.white} />
             </TouchableOpacity>

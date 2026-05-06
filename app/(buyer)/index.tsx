@@ -52,8 +52,8 @@ export default function BuyerDashboard() {
           <Text style={styles.naEmoji}>🗺️</Text>
           <Text style={styles.naTitle}>Not Yet Available</Text>
           <Text style={styles.naDesc}>
-            IsdaHub is not yet available in your area.{'\n'}
-            We currently serve Buenavista and Nasipit, Agusan del Norte.
+            IsdaHub PH is not yet available in your area.{'\n'}
+            We currently serve selected municipalities in Agusan del Norte.
           </Text>
           <Text style={styles.naFooter}>Stay tuned for expansion!</Text>
         </View>
@@ -65,7 +65,7 @@ export default function BuyerDashboard() {
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
         {/* Header */}
-        <LinearGradient colors={['#1A2E25', '#0A6E4F']} style={styles.header}>
+        <LinearGradient colors={[Colors.dark, Colors.primary]} style={styles.header}>
           <View style={styles.headerTop}>
             <View>
               <Text style={styles.greeting}>Hello{currentUser ? `, ${currentUser.fullName.split(' ')[0]}` : ''}! 👋</Text>
@@ -186,7 +186,7 @@ export default function BuyerDashboard() {
         <View style={styles.coverageBadge}>
           <Ionicons name="shield-checkmark" size={14} color={Colors.primary} />
           <Text style={styles.coverageText}>
-            {' '}Serving <Text style={{ fontFamily: 'Inter_700Bold' }}>Buenavista</Text> and <Text style={{ fontFamily: 'Inter_700Bold' }}>Nasipit</Text>
+            {' '}Serving coastal municipalities in <Text style={{ fontFamily: 'Inter_700Bold' }}>Agusan del Norte</Text>
           </Text>
         </View>
 

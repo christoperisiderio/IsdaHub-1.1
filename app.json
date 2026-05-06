@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "IsdaHub",
+    "name": "IsdaHub PH",
     "slug": "isdahub",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -9,9 +9,9 @@
     "newArchEnabled": true,
     "scheme": "isdahub",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0A6E4F"
+      "backgroundColor": "#1D4ED8"
     },
     "ios": {
       "supportsTablet": true,
@@ -19,8 +19,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#0A6E4F"
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#1D4ED8"
       },
       "package": "com.isdahub.app",
       "permissions": [
@@ -37,7 +37,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "IsdaHub needs access to your photos to upload catch photos."
+          "photosPermission": "IsdaHub PH needs access to your photos to upload catch photos."
         }
       ]
     ],

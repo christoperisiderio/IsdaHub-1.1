@@ -65,6 +65,7 @@ export default function RootLayout() {
           <Stack.Screen name="(fisherman)" />
           <Stack.Screen name="(buyer)" />
           <Stack.Screen name="notifications" />
+          <Stack.Screen name="order-chat" />
         </Stack>
       </SafeAreaProvider>
     </GestureHandlerRootView>

@@ -53,7 +53,7 @@ export default function FishermanOrdersScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
-      <LinearGradient colors={['#1A2E25', '#0A6E4F']} style={styles.header}>
+      <LinearGradient colors={[Colors.dark, Colors.primary]} style={styles.header}>
         <Text style={styles.headerTitle}>Manage Orders</Text>
         <Text style={styles.headerSub}>{allOrders.length} total orders</Text>
       </LinearGradient>

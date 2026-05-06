@@ -17,6 +17,8 @@ interface InputProps extends TextInputProps {
   icon?: keyof typeof Ionicons.glyphMap;
   rightIcon?: keyof typeof Ionicons.glyphMap;
   onRightIconPress?: () => void;
+  rightText?: string;
+  onRightTextPress?: () => void;
   isPassword?: boolean;
 }
 
@@ -26,6 +28,8 @@ export const Input: React.FC<InputProps> = ({
   icon,
   rightIcon,
   onRightIconPress,
+  rightText,
+  onRightTextPress,
   isPassword,
   style,
   ...props
@@ -59,6 +63,11 @@ export const Input: React.FC<InputProps> = ({
             <Ionicons name={rightIcon} size={18} color={Colors.muted} />
           </TouchableOpacity>
         )}
+        {rightText && !isPassword && (
+          <TouchableOpacity onPress={onRightTextPress} style={styles.rightTextBtn}>
+            <Text style={styles.rightText}>{rightText}</Text>
+          </TouchableOpacity>
+        )}
       </View>
       {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
@@ -85,6 +94,18 @@ const styles = StyleSheet.create({
   inputError: { borderColor: Colors.danger },
   leftIcon: { marginRight: 8 },
   rightIcon: { padding: 4 },
+  rightTextBtn: {
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 999,
+    backgroundColor: Colors.overlay,
+    marginLeft: 6,
+  },
+  rightText: {
+    fontSize: 12,
+    fontFamily: 'Inter_700Bold',
+    color: Colors.primary,
+  },
   input: {
     flex: 1,
     paddingVertical: 13,

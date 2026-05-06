@@ -17,7 +17,7 @@ export default function OrderHistoryScreen() {
   if (isGuest || !currentUser) {
     return (
       <SafeAreaView style={styles.safe} edges={['top']}>
-        <LinearGradient colors={['#1A2E25', '#0A6E4F']} style={styles.header}>
+        <LinearGradient colors={[Colors.dark, Colors.primary]} style={styles.header}>
           <Text style={styles.headerTitle}>Order History</Text>
         </LinearGradient>
         <View style={styles.guestState}>
@@ -38,7 +38,7 @@ export default function OrderHistoryScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
-      <LinearGradient colors={['#1A2E25', '#0A6E4F']} style={styles.header}>
+      <LinearGradient colors={[Colors.dark, Colors.primary]} style={styles.header}>
         <Text style={styles.headerTitle}>Order History</Text>
         <View style={styles.summaryRow}>
           <View style={styles.summaryItem}>

@@ -60,7 +60,7 @@ export default function EarningsScreen() {
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <LinearGradient colors={['#1A2E25', '#0A6E4F']} style={styles.header}>
+        <LinearGradient colors={[Colors.dark, Colors.primary]} style={styles.header}>
           <Text style={styles.headerTitle}>Earnings</Text>
           <Text style={styles.earningsValue}>₱{periodAmounts[period].toLocaleString()}</Text>
           <Text style={styles.earningsPeriod}>{PERIOD_TABS[period]}</Text>

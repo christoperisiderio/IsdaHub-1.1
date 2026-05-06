@@ -4,7 +4,7 @@ import {
   View, Text, StyleSheet, ScrollView,
   TouchableOpacity, KeyboardAvoidingView, Platform, Alert,
 } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -16,10 +16,11 @@ import { MUNICIPALITIES_WITH_BARANGAYS, COVERED_MUNICIPALITIES } from '../../con
 import { UserRole } from '../../types';
 
 export default function RegisterScreen() {
+  const params = useLocalSearchParams<{ mobile?: string; otpVerified?: string }>();
   const { register } = useAuthStore();
   const [form, setForm] = useState({
     fullName: '',
-    mobile: '',
+    mobile: params.mobile || '',
     password: '',
     confirmPassword: '',
     role: '' as UserRole | '',
@@ -28,17 +29,28 @@ export default function RegisterScreen() {
     businessName: '',
     fisheryRegNumber: '',
   });
+  const [otpCode, setOtpCode] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [mobileVerified, setMobileVerified] = useState(params.otpVerified === '1');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
   const set = (key: string, val: string) =>
-    setForm((f) => ({ ...f, [key]: val }));
+    setForm((f) => {
+      if (key === 'mobile') {
+        setMobileVerified(false);
+        setOtpSent(false);
+        setOtpCode('');
+      }
+      return { ...f, [key]: val };
+    });
 
   const validate = () => {
     const e: Record<string, string> = {};
     if (!form.fullName.trim()) e.fullName = 'Full name is required.';
     if (!form.mobile.trim()) e.mobile = 'Mobile number is required.';
     else if (!/^09\d{9}$/.test(form.mobile.trim())) e.mobile = 'Enter a valid PH mobile number (09XXXXXXXXX).';
+    if (!mobileVerified) e.mobile = 'Please verify your mobile number first.';
     if (!form.password) e.password = 'Password is required.';
     else if (form.password.length < 6) e.password = 'Password must be at least 6 characters.';
     if (form.password !== form.confirmPassword) e.confirmPassword = 'Passwords do not match.';
@@ -47,6 +59,34 @@ export default function RegisterScreen() {
     if (!form.barangay) e.barangay = 'Please select your barangay.';
     setErrors(e);
     return Object.keys(e).length === 0;
+  };
+
+  const handleSendOtp = () => {
+    if (!/^09\d{9}$/.test(form.mobile.trim())) {
+      setErrors((prev) => ({ ...prev, mobile: 'Enter a valid PH mobile number (09XXXXXXXXX).' }));
+      return;
+    }
+    setErrors((prev) => ({ ...prev, mobile: '', otp: '' }));
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setOtpSent(true);
+      Alert.alert('OTP Sent', 'Presentation mode: any 6-digit OTP will verify.');
+    }, 500);
+  };
+
+  const handleVerifyOtp = () => {
+    if (!/^\d{6}$/.test(otpCode.trim())) {
+      setErrors((prev) => ({ ...prev, otp: 'Enter a valid 6-digit OTP.' }));
+      return;
+    }
+    setErrors((prev) => ({ ...prev, otp: '' }));
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setMobileVerified(true);
+      Alert.alert('Verified', 'Mobile number successfully verified.');
+    }, 450);
   };
 
   const handleRegister = () => {
@@ -76,12 +116,12 @@ export default function RegisterScreen() {
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         {/* Header */}
-        <LinearGradient colors={['#1A2E25', '#0A6E4F']} style={styles.header}>
+        <LinearGradient colors={[Colors.dark, Colors.primary]} style={styles.header}>
           <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
             <Ionicons name="arrow-back" size={22} color={Colors.white} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Create Account</Text>
-          <Text style={styles.headerSub}>Join IsdaHub — fresh seafood marketplace</Text>
+          <Text style={styles.headerSub}>Join IsdaHub PH — fresh seafood marketplace</Text>
         </LinearGradient>
 
         <View style={styles.formCard}>
@@ -127,8 +167,24 @@ export default function RegisterScreen() {
             onChangeText={(v) => set('mobile', v)}
             icon="call-outline"
             keyboardType="phone-pad"
+            rightText={mobileVerified ? 'Verified' : 'Verify'}
+            onRightTextPress={mobileVerified ? undefined : handleSendOtp}
             error={errors.mobile}
           />
+          {otpSent && !mobileVerified && (
+            <Input
+              label="OTP Code"
+              placeholder="Enter 6-digit OTP"
+              value={otpCode}
+              onChangeText={setOtpCode}
+              icon="key-outline"
+              keyboardType="number-pad"
+              maxLength={6}
+              rightText="Verify OTP"
+              onRightTextPress={handleVerifyOtp}
+              error={errors.otp}
+            />
+          )}
           <Input
             label="Password"
             placeholder="At least 6 characters"
